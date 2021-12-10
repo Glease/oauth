@@ -8,7 +8,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 // The value here should match an entry in the META-INF/mods.toml file
-@Mod(modid = "oauth", acceptableRemoteVersions = "*")
+@Mod(modid = "oauth", name = "OAuth", acceptableRemoteVersions = "*")
 public class OAuth {
     // Directly reference a log4j logger.
     private static final Logger LOGGER = LogManager.getLogger();
