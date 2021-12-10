@@ -1,10 +1,10 @@
 [
     {
-        "modid": "oauth",
-        "name": "OAuth",
+        "modid": "${modId}",
+        "name": "${modName}",
         "description": "Adds the ability to relogin without closing your game. It includes legacy username logins, mojang logins, and microsoft account logins.",
-        "version": "${version}",
-        "mcversion": "1.7.10",
+        "version": "${modVersion}",
+        "mcversion": "${minecraftVersion}",
         "url": "sintinium.com",
         "updateUrl": "",
         "authorList": [
