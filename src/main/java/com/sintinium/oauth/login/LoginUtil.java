@@ -1,5 +1,12 @@
 package com.sintinium.oauth.login;
 
+import java.lang.reflect.Field;
+import java.util.Optional;
+import java.util.UUID;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.util.Session;
+
 import com.mojang.authlib.Agent;
 import com.mojang.authlib.UserType;
 import com.mojang.authlib.exceptions.AuthenticationException;
@@ -9,12 +16,6 @@ import com.mojang.authlib.yggdrasil.YggdrasilMinecraftSessionService;
 import com.mojang.authlib.yggdrasil.YggdrasilUserAuthentication;
 import com.mojang.util.UUIDTypeAdapter;
 import cpw.mods.fml.relauncher.ReflectionHelper;
-import net.minecraft.client.Minecraft;
-import net.minecraft.util.Session;
-
-import java.lang.reflect.Field;
-import java.util.Optional;
-import java.util.UUID;
 
 public class LoginUtil {
 
@@ -23,9 +24,13 @@ public class LoginUtil {
     public static boolean wasOnline = false;
     private static long lastCheck = -1L;
 
-    private static YggdrasilAuthenticationService authService = new YggdrasilAuthenticationService(Minecraft.getMinecraft().getProxy(), UUID.randomUUID().toString());
-    private static YggdrasilUserAuthentication userAuth = (YggdrasilUserAuthentication) authService.createUserAuthentication(Agent.MINECRAFT);
-    private static YggdrasilMinecraftSessionService minecraftSessionService = (YggdrasilMinecraftSessionService) authService.createMinecraftSessionService();
+    private static YggdrasilAuthenticationService authService = new YggdrasilAuthenticationService(
+            Minecraft.getMinecraft().getProxy(),
+            UUID.randomUUID().toString());
+    private static YggdrasilUserAuthentication userAuth = (YggdrasilUserAuthentication) authService
+            .createUserAuthentication(Agent.MINECRAFT);
+    private static YggdrasilMinecraftSessionService minecraftSessionService = (YggdrasilMinecraftSessionService) authService
+            .createMinecraftSessionService();
 
     public static void updateOnlineStatus() {
         needsRefresh = true;
@@ -63,7 +68,11 @@ public class LoginUtil {
     public static Optional<Boolean> loginMojangOrLegacy(String username, String password) {
         try {
             if (password.isEmpty()) {
-                Session session = new Session(username, UUID.nameUUIDFromBytes(username.getBytes()).toString(), null, UserType.LEGACY.getName());
+                Session session = new Session(
+                        username,
+                        UUID.nameUUIDFromBytes(username.getBytes()).toString(),
+                        null,
+                        UserType.LEGACY.getName());
                 setSession(session);
                 return Optional.of(true);
             }

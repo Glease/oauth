@@ -1,24 +1,5 @@
 package com.sintinium.oauth.login;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonPrimitive;
-import com.sun.net.httpserver.HttpServer;
-import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
-
 import java.awt.*;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -34,7 +15,27 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-//import org.json.*;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonPrimitive;
+import com.sun.net.httpserver.HttpServer;
+
+// import org.json.*;
 
 public class MicrosoftLogin {
 
@@ -48,18 +49,15 @@ public class MicrosoftLogin {
     private static String redirect = "http://localhost:26669/" + redirectDict;
     // https://wiki.vg/Microsoft_Authentication_Scheme
     private static final String msAuthUrl = new UrlBuilder("https://login.live.com/oauth20_authorize.srf")
-            .addParameter("client_id", clientId)
-            .addParameter("response_type", "code")
-            .addParameter("redirect_uri", redirect)
-            .addParameter("scope", "XboxLive.signin%20offline_access")
-            .build();
-    private RequestConfig config = RequestConfig.custom().setConnectTimeout(30 * 1000).setSocketTimeout(30 * 1000).setConnectionRequestTimeout(30 * 1000).build();
+            .addParameter("client_id", clientId).addParameter("response_type", "code")
+            .addParameter("redirect_uri", redirect).addParameter("scope", "XboxLive.signin%20offline_access").build();
+    private RequestConfig config = RequestConfig.custom().setConnectTimeout(30 * 1000).setSocketTimeout(30 * 1000)
+            .setConnectionRequestTimeout(30 * 1000).build();
     private CloseableHttpClient client = HttpClientBuilder.create().setDefaultRequestConfig(config).build();
     private boolean isCancelled = false;
     private String errorMsg = null;
     private boolean isDebug = false;
-    private Consumer<String> updateStatus = s -> {
-    };
+    private Consumer<String> updateStatus = s -> {};
 
     public void setUpdateStatusConsumer(Consumer<String> updateStatus) {
         this.updateStatus = updateStatus;
@@ -173,7 +171,7 @@ public class MicrosoftLogin {
             });
             server.setExecutor(null);
             server.start();
-//        Desktop.getDesktop().browse(new URI(msAuthUrl));
+            // Desktop.getDesktop().browse(new URI(msAuthUrl));
 
             try {
                 Desktop.getDesktop().browse(new URI(msAuthUrl));
@@ -211,7 +209,7 @@ public class MicrosoftLogin {
                 // TODO: Throw readable exception!
                 throw new RuntimeException("No entity!");
             }
-//        System.out.println(EntityUtils.toString(response.getEntity()));
+            // System.out.println(EntityUtils.toString(response.getEntity()));
             JsonObject obj = parseObject(EntityUtils.toString(response.getEntity()));
             return new MsToken(obj.get("access_token").getAsString(), obj.get("refresh_token").getAsString());
         } catch (Exception e) {
@@ -244,7 +242,10 @@ public class MicrosoftLogin {
                 throw new RuntimeException("No entity!");
             }
             JsonObject responseObj = parseObject(response);
-            return new XblToken(responseObj.get("Token").getAsString(), responseObj.get("DisplayClaims").getAsJsonObject().get("xui").getAsJsonArray().get(0).getAsJsonObject().get("uhs").getAsString());
+            return new XblToken(
+                    responseObj.get("Token").getAsString(),
+                    responseObj.get("DisplayClaims").getAsJsonObject().get("xui").getAsJsonArray().get(0)
+                            .getAsJsonObject().get("uhs").getAsString());
         } catch (Exception e) {
             this.errorMsg = ExceptionUtils.getStackTrace(e);
         }
@@ -313,6 +314,7 @@ public class MicrosoftLogin {
     }
 
     private static class MsToken {
+
         public String accessToken;
         public String refreshToken;
 
@@ -323,6 +325,7 @@ public class MicrosoftLogin {
     }
 
     private static class XblToken {
+
         public String token;
         public String ush;
 
@@ -333,6 +336,7 @@ public class MicrosoftLogin {
     }
 
     private static class XstsToken {
+
         public String token;
 
         public XstsToken(String token) {
@@ -341,6 +345,7 @@ public class MicrosoftLogin {
     }
 
     public static class MinecraftToken {
+
         public String accessToken;
 
         public MinecraftToken(String accessToken) {
@@ -377,6 +382,7 @@ public class MicrosoftLogin {
     }
 
     public class MinecraftProfile {
+
         public String name;
         public String id;
         public MinecraftToken token;

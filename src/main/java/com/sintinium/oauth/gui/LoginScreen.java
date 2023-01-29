@@ -1,20 +1,23 @@
 package com.sintinium.oauth.gui;
 
-import com.sintinium.oauth.OAuthConfig;
-import com.sintinium.oauth.login.LoginUtil;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiMultiplayer;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.GuiTextField;
-import org.lwjgl.input.Keyboard;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicReference;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiMultiplayer;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.GuiTextField;
+
+import org.lwjgl.input.Keyboard;
+
+import com.sintinium.oauth.OAuthConfig;
+import com.sintinium.oauth.login.LoginUtil;
+
 public class LoginScreen extends GuiScreenCustom {
+
     private final GuiScreen lastScreen;
     private final GuiMultiplayer multiplayerScreen;
     private ActionButton mojangLoginButton;
@@ -64,16 +67,33 @@ public class LoginScreen extends GuiScreenCustom {
         Keyboard.enableRepeatEvents(true);
         buttonList.clear();
 
-        this.passwordWidget = new PasswordFieldWidget(this.fontRendererObj, this.width / 2 - 100, this.height / 2 - 20, 200, 20);
+        this.passwordWidget = new PasswordFieldWidget(
+                this.fontRendererObj,
+                this.width / 2 - 100,
+                this.height / 2 - 20,
+                200,
+                20);
         this.passwordWidget.setMaxStringLength(128);
 
-        this.usernameWidget = new UsernameFieldWidget(this.fontRendererObj, this.width / 2 - 100, this.height / 2 - 60, 200, 20, passwordWidget);
+        this.usernameWidget = new UsernameFieldWidget(
+                this.fontRendererObj,
+                this.width / 2 - 100,
+                this.height / 2 - 60,
+                200,
+                20,
+                passwordWidget);
         this.usernameWidget.setFocused(true);
         if (LoginUtil.lastMojangUsername != null) {
             this.usernameWidget.setText(LoginUtil.lastMojangUsername);
         }
 
-        this.savePasswordWidget = this.addButton(new OAuthCheckbox(4, this.width / 2 - this.fontRendererObj.getStringWidth("Save password") - 25, this.height / 2 + 1 + 2, "Save password", false));
+        this.savePasswordWidget = this.addButton(
+                new OAuthCheckbox(
+                        4,
+                        this.width / 2 - this.fontRendererObj.getStringWidth("Save password") - 25,
+                        this.height / 2 + 1 + 2,
+                        "Save password",
+                        false));
 
         Runnable savePw = () -> {
             if (savePasswordWidget.isChecked()) {
@@ -83,25 +103,27 @@ public class LoginScreen extends GuiScreenCustom {
             }
         };
 
-        this.mojangLoginButton = this.addButton(new ResponsiveButton(2, this.width / 2 - 100, this.height / 2 + 36, 200, 20, "Login", () -> {
-            Thread thread = new Thread(() -> {
-                if (usernameWidget.getText().isEmpty()) {
-                    toRun.add(() -> this.status.set("Missing username!"));
-                } else {
-                    Optional<Boolean> didSuccessfullyLogIn = LoginUtil.loginMojangOrLegacy(usernameWidget.getText(), passwordWidget.getText());
-                    savePw.run();
-                    if (!didSuccessfullyLogIn.isPresent()) {
-                        toRun.add(() -> this.status.set("You seem to be offline. Check your connection!"));
-                    } else if (!didSuccessfullyLogIn.get()) {
-                        toRun.add(() -> this.status.set("Wrong password or username!"));
-                    } else {
-                        LoginUtil.updateOnlineStatus();
-                        toRun.add(() -> Minecraft.getMinecraft().displayGuiScreen(multiplayerScreen));
-                    }
-                }
-            });
-            thread.start();
-        }, this::updateLoginButton, () -> this.mojangLoginButton.displayString = "Login"));
+        this.mojangLoginButton = this
+                .addButton(new ResponsiveButton(2, this.width / 2 - 100, this.height / 2 + 36, 200, 20, "Login", () -> {
+                    Thread thread = new Thread(() -> {
+                        if (usernameWidget.getText().isEmpty()) {
+                            toRun.add(() -> this.status.set("Missing username!"));
+                        } else {
+                            Optional<Boolean> didSuccessfullyLogIn = LoginUtil
+                                    .loginMojangOrLegacy(usernameWidget.getText(), passwordWidget.getText());
+                            savePw.run();
+                            if (!didSuccessfullyLogIn.isPresent()) {
+                                toRun.add(() -> this.status.set("You seem to be offline. Check your connection!"));
+                            } else if (!didSuccessfullyLogIn.get()) {
+                                toRun.add(() -> this.status.set("Wrong password or username!"));
+                            } else {
+                                LoginUtil.updateOnlineStatus();
+                                toRun.add(() -> Minecraft.getMinecraft().displayGuiScreen(multiplayerScreen));
+                            }
+                        }
+                    });
+                    thread.start();
+                }, this::updateLoginButton, () -> this.mojangLoginButton.displayString = "Login"));
 
         this.addButton(new ActionButton(3, this.width / 2 - 100, this.height / 2 + 60, 200, 20, "Cancel", () -> {
             if (!this.savePasswordWidget.isChecked()) {

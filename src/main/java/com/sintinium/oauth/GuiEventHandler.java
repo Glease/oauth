@@ -1,18 +1,20 @@
 package com.sintinium.oauth;
 
-import com.sintinium.oauth.gui.LoginTypeScreen;
-import com.sintinium.oauth.gui.TextWidget;
-import com.sintinium.oauth.login.LoginUtil;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiMultiplayer;
 import net.minecraftforge.client.event.GuiScreenEvent;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.sintinium.oauth.gui.LoginTypeScreen;
+import com.sintinium.oauth.gui.TextWidget;
+import com.sintinium.oauth.login.LoginUtil;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class GuiEventHandler {
+
     private static TextWidget statusText = new TextWidget(10 + 66 + 3, 12, "Status: loading");
 
     @SubscribeEvent
@@ -20,8 +22,9 @@ public class GuiEventHandler {
         if (!(event.gui instanceof GuiMultiplayer)) return;
         GuiMultiplayer multiplayerScreen = (GuiMultiplayer) event.gui;
         try {
-//            Method addButtonMethod = ObfuscationReflectionHelper.findMethod(Screen.class, "addButton", Widget.class);
-//            Method addButtonMethod = ObfuscationReflectionHelper.findMethod(Screen.class, "func_230480_a_", Widget.class);
+            // Method addButtonMethod = ObfuscationReflectionHelper.findMethod(Screen.class, "addButton", Widget.class);
+            // Method addButtonMethod = ObfuscationReflectionHelper.findMethod(Screen.class, "func_230480_a_",
+            // Widget.class);
             List<GuiButton> buttonList = new ArrayList<>();
             GuiButton loginButton = new GuiButton(29183, 10, 6, 66, 20, "Oauth Login");
             // p_onPress_1_ ->

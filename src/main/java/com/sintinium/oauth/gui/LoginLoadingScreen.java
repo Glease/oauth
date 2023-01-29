@@ -1,10 +1,10 @@
 package com.sintinium.oauth.gui;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
-
-import java.util.concurrent.atomic.AtomicReference;
 
 public class LoginLoadingScreen extends GuiScreenCustom {
 
@@ -20,7 +20,8 @@ public class LoginLoadingScreen extends GuiScreenCustom {
     private String title = "Logging in";
     private AtomicReference<String> updateText = new AtomicReference<>();
 
-    protected LoginLoadingScreen(GuiScreen multiplayerScreen, GuiScreen callingScreen, Runnable onCancel, boolean isMicrosoft) {
+    protected LoginLoadingScreen(GuiScreen multiplayerScreen, GuiScreen callingScreen, Runnable onCancel,
+            boolean isMicrosoft) {
         this.multiplayerScreen = multiplayerScreen;
         this.lastScreen = callingScreen;
         this.onCancel = onCancel;
@@ -68,9 +69,19 @@ public class LoginLoadingScreen extends GuiScreenCustom {
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         this.drawBackground(0);
-        drawCenteredString(Minecraft.getMinecraft().fontRenderer, renderText, this.width / 2, this.height / 2 - 40, 0xFFFFFF);
+        drawCenteredString(
+                Minecraft.getMinecraft().fontRenderer,
+                renderText,
+                this.width / 2,
+                this.height / 2 - 40,
+                0xFFFFFF);
         if (this.isMicrosoft) {
-            drawCenteredString(Minecraft.getMinecraft().fontRenderer, updateText.get(), this.width / 2, this.height / 2 - 28, 0xFFFFFF);
+            drawCenteredString(
+                    Minecraft.getMinecraft().fontRenderer,
+                    updateText.get(),
+                    this.width / 2,
+                    this.height / 2 - 28,
+                    0xFFFFFF);
         }
         super.drawScreen(mouseX, mouseY, partialTicks);
     }

@@ -1,12 +1,15 @@
 package com.sintinium.oauth;
 
-import cpw.mods.fml.common.FMLLog;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
+
 import org.apache.logging.log4j.Level;
 
+import cpw.mods.fml.common.FMLLog;
+
 public class OAuthConfig {
+
     private static Property lastUsername;
     private static Property lastPassword;
     private static Configuration cfg;
@@ -27,7 +30,6 @@ public class OAuthConfig {
         }
     }
 
-
     public static String getUsername() {
         return lastUsername.getString();
     }
@@ -38,11 +40,16 @@ public class OAuthConfig {
     }
 
     public static String getPassword() {
-        return EncryptionUtil.decryptString(lastPassword.getString(), Minecraft.getMinecraft().mcDataDir.getAbsolutePath().replaceAll("\\\\", "/"));
+        return EncryptionUtil.decryptString(
+                lastPassword.getString(),
+                Minecraft.getMinecraft().mcDataDir.getAbsolutePath().replaceAll("\\\\", "/"));
     }
 
     public static void setPassword(String password) {
-        lastPassword.set(EncryptionUtil.encryptString(password, Minecraft.getMinecraft().mcDataDir.getAbsolutePath().replaceAll("\\\\", "/")));
+        lastPassword.set(
+                EncryptionUtil.encryptString(
+                        password,
+                        Minecraft.getMinecraft().mcDataDir.getAbsolutePath().replaceAll("\\\\", "/")));
         cfg.save();
     }
 

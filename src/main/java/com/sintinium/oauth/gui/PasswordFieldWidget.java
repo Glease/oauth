@@ -1,10 +1,5 @@
 package com.sintinium.oauth.gui;
 
-
-import com.google.common.base.Predicate;
-import com.google.common.base.Predicates;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
@@ -12,10 +7,18 @@ import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.ChatAllowedCharacters;
 import net.minecraft.util.MathHelper;
+
 import org.lwjgl.opengl.GL11;
+
+import com.google.common.base.Predicate;
+import com.google.common.base.Predicates;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class PasswordFieldWidget extends GuiTextField {
+
     private final FontRenderer fontRenderer;
     public int x;
     public int y;
@@ -308,7 +311,9 @@ public class PasswordFieldWidget extends GuiTextField {
     }
 
     public void mouseClicked(int mouseX, int mouseY, int mouseButton) {
-        boolean flag = mouseX >= this.x && mouseX < this.x + this.width && mouseY >= this.y && mouseY < this.y + this.height;
+        boolean flag = mouseX >= this.x && mouseX < this.x + this.width
+                && mouseY >= this.y
+                && mouseY < this.y + this.height;
 
         if (this.canLoseFocus) {
             this.setFocused(flag);
@@ -344,8 +349,9 @@ public class PasswordFieldWidget extends GuiTextField {
             int i = this.isEnabled ? this.enabledColor : this.disabledColor;
             int j = this.cursorPosition - this.lineScrollOffset;
             int k = this.selectionEnd - this.lineScrollOffset;
-            String s = this.fontRenderer.trimStringToWidth(getHiddenValue().substring(this.lineScrollOffset), this.getWidth());
-//            String s = this.fontRenderer.trimStringToWidth(text.substring(this.lineScrollOffset), this.getWidth());
+            String s = this.fontRenderer
+                    .trimStringToWidth(getHiddenValue().substring(this.lineScrollOffset), this.getWidth());
+            // String s = this.fontRenderer.trimStringToWidth(text.substring(this.lineScrollOffset), this.getWidth());
             boolean flag = j >= 0 && j <= s.length();
             boolean flag1 = this.isFocused && this.cursorCounter / 6 % 2 == 0 && flag;
             int l = this.enableBackgroundDrawing ? this.x + 4 : this.x;

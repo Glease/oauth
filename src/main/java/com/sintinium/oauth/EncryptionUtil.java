@@ -1,15 +1,16 @@
 package com.sintinium.oauth;
 
-import org.apache.commons.codec.binary.Base64;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.spec.InvalidKeySpecException;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.security.spec.InvalidKeySpecException;
+
+import org.apache.commons.codec.binary.Base64;
 
 public class EncryptionUtil {
 
@@ -50,7 +51,8 @@ public class EncryptionUtil {
     }
 
     private static byte[] hashPassword(String pass) throws NoSuchAlgorithmException, InvalidKeySpecException {
-        return SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256").generateSecret(new PBEKeySpec(pass.toCharArray(), "oauth".getBytes(), 65536, 256)).getEncoded();
+        return SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256")
+                .generateSecret(new PBEKeySpec(pass.toCharArray(), "oauth".getBytes(), 65536, 256)).getEncoded();
     }
 
     public static void main(String[] args) {

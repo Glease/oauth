@@ -2,9 +2,11 @@ package com.sintinium.oauth.gui;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
+
 import org.lwjgl.input.Keyboard;
 
 public class GuiScreenCustom extends GuiScreen {
+
     protected <T extends GuiButton> T addButton(T buttonIn) {
         this.buttonList.add(buttonIn);
         return buttonIn;

@@ -3,6 +3,7 @@ package com.sintinium.oauth.gui;
 import net.minecraft.client.gui.GuiScreen;
 
 public class TextWidget {
+
     private final int x;
     private final int y;
     private String text;
