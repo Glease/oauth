@@ -1,6 +1,7 @@
 package com.sintinium.oauth.login;
 
 import java.lang.reflect.Field;
+import java.net.Proxy;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -16,6 +17,8 @@ import com.mojang.authlib.yggdrasil.YggdrasilMinecraftSessionService;
 import com.mojang.authlib.yggdrasil.YggdrasilUserAuthentication;
 import com.mojang.util.UUIDTypeAdapter;
 import cpw.mods.fml.relauncher.ReflectionHelper;
+import org.apache.http.HttpHost;
+import org.apache.http.client.protocol.HttpClientContext;
 
 public class LoginUtil {
 
@@ -35,6 +38,15 @@ public class LoginUtil {
     public static void updateOnlineStatus() {
         needsRefresh = true;
         isOnline();
+    }
+
+    public static HttpClientContext getHttpRequestContext() {
+        Proxy proxy = Minecraft.getMinecraft().getProxy();
+        if (proxy.type() == Proxy.Type.DIRECT)
+            return null;
+        HttpClientContext ctx = new HttpClientContext();
+        ctx.setAttribute("socks.address", proxy.address());
+        return ctx;
     }
 
     public static boolean isOnline() {

@@ -20,8 +20,10 @@ import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -58,6 +60,16 @@ public class MicrosoftLogin {
     private String errorMsg = null;
     private boolean isDebug = false;
     private Consumer<String> updateStatus = s -> {};
+
+    private JsonObject executeRequest(final HttpUriRequest request) throws IOException {
+        try (CloseableHttpResponse response = client.execute(request, LoginUtil.getHttpRequestContext())) {
+            if (response.getEntity() == null) {
+                // TODO: Throw readable exception!
+                throw new RuntimeException("No entity!");
+            }
+            return parseObject(response);
+        }
+    }
 
     public void setUpdateStatusConsumer(Consumer<String> updateStatus) {
         this.updateStatus = updateStatus;
@@ -203,14 +215,8 @@ public class MicrosoftLogin {
 
             post.setHeader("Accept", "application/x-www-form-urlencoded");
             post.setHeader("Content-type", "application/x-www-form-urlencoded");
-            HttpResponse response = client.execute(post);
 
-            if (response.getEntity() == null) {
-                // TODO: Throw readable exception!
-                throw new RuntimeException("No entity!");
-            }
-            // System.out.println(EntityUtils.toString(response.getEntity()));
-            JsonObject obj = parseObject(EntityUtils.toString(response.getEntity()));
+            JsonObject obj = executeRequest(post);
             return new MsToken(obj.get("access_token").getAsString(), obj.get("refresh_token").getAsString());
         } catch (Exception e) {
             this.errorMsg = ExceptionUtils.getStackTrace(e);
@@ -235,13 +241,7 @@ public class MicrosoftLogin {
             StringEntity requestEntity = new StringEntity(obj.toString(), ContentType.APPLICATION_JSON);
             post.setEntity(requestEntity);
 
-            HttpResponse response = client.execute(post);
-
-            if (response.getEntity() == null) {
-                // TODO
-                throw new RuntimeException("No entity!");
-            }
-            JsonObject responseObj = parseObject(response);
+            JsonObject responseObj = executeRequest(post);
             return new XblToken(
                     responseObj.get("Token").getAsString(),
                     responseObj.get("DisplayClaims").getAsJsonObject().get("xui").getAsJsonArray().get(0)
@@ -268,8 +268,7 @@ public class MicrosoftLogin {
             StringEntity entity = new StringEntity(obj.toString(), ContentType.APPLICATION_JSON);
             post.setEntity(entity);
 
-            HttpResponse response = client.execute(post);
-            return new XstsToken(parseObject(response).get("Token").getAsString());
+            return new XstsToken(executeRequest(post).get("Token").getAsString());
         } catch (Exception e) {
             this.errorMsg = ExceptionUtils.getStackTrace(e);
         }
@@ -283,8 +282,7 @@ public class MicrosoftLogin {
             obj.addProperty("identityToken", "XBL3.0 x=" + xblToken.ush + ";" + xstsToken.token);
             StringEntity entity = new StringEntity(obj.toString(), ContentType.APPLICATION_JSON);
             post.setEntity(entity);
-            HttpResponse response = client.execute(post);
-            JsonObject responseObj = parseObject(response);
+            JsonObject responseObj = executeRequest(post);
             return new MinecraftToken(responseObj.get("access_token").getAsString());
         } catch (Exception e) {
             this.errorMsg = ExceptionUtils.getStackTrace(e);
@@ -296,8 +294,7 @@ public class MicrosoftLogin {
         try {
             HttpGet get = new HttpGet(minecraftProfile);
             get.setHeader("Authorization", "Bearer " + minecraftToken.accessToken);
-            HttpResponse response = client.execute(get);
-            JsonObject obj = parseObject(response);
+            JsonObject obj = executeRequest(get);
             return new MinecraftProfile(obj.get("name").getAsString(), obj.get("id").getAsString(), minecraftToken);
         } catch (Exception e) {
             this.errorMsg = ExceptionUtils.getStackTrace(e);
